@@ -1,5 +1,3 @@
-// src/components/Player.tsx
-
 import { useState, useRef, useCallback } from "react";
 import { useFrame } from "@react-three/fiber";
 import {
@@ -16,20 +14,17 @@ import {
 } from "@react-three/rapier";
 import * as THREE from "three";
 
-// 型ガード: XRInputSourceStateがコントローラーであるかを確認
 function isControllerState(
   state: XRInputSourceState | undefined
 ): state is XRControllerState {
   return state?.type === "controller";
 }
 
-// 掴んだオブジェクトの状態を管理するための型
 type GrabbedObjectState = {
   object: RapierRigidBody;
   controllerState: XRControllerState;
 } | null;
 
-// GrabTriggerのプロパティの型
 type GrabTriggerProps = {
   onGrab: (controllerState: XRControllerState, object: RapierRigidBody) => void;
   controllerState: XRInputSourceState | undefined;
@@ -41,9 +36,7 @@ type GrabTriggerProps = {
 function GrabTrigger({ onGrab, controllerState }: GrabTriggerProps) {
   const grabAreaRef = useRef<RapierRigidBody>(null);
 
-  // Hooksは必ずコンポーネントのトップレベルで呼び出す
   useFrame(() => {
-    // Hooksのコールバック内で条件分岐を行う
     if (
       isControllerState(controllerState) &&
       controllerState.object &&
@@ -55,7 +48,6 @@ function GrabTrigger({ onGrab, controllerState }: GrabTriggerProps) {
     }
   });
 
-  // コンポーネントの早期リターンはHooksの後で行う
   if (!isControllerState(controllerState)) return null;
 
   return (
