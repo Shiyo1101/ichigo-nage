@@ -33,6 +33,7 @@ export function Target({ onHit }: TargetProps) {
       sensor
       onCollisionEnter={handleCollision}
       position={[0, 1.5, -3]}
+      rotation={[-Math.PI / 2, 0, 0]}
     >
       <mesh>
         <cylinderGeometry args={[0.5, 0.5, 0.1, 32]} />
