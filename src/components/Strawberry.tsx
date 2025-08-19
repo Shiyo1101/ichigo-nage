@@ -1,31 +1,25 @@
 import { useGLTF } from "@react-three/drei";
 import { RigidBody, type RigidBodyProps } from "@react-three/rapier";
-import { Mesh, MeshStandardMaterial } from "three";
+import { useEffect } from "react";
+import * as THREE from "three";
 
-type GLTFResult = {
-  nodes: {
-    strawberry: Mesh;
-  };
-  materials: {
-    red: MeshStandardMaterial;
-  };
-};
+type StrawberryProps = RigidBodyProps;
 
-export function Strawberry(props: RigidBodyProps) {
-  // as any で一時的に型エラーを回避し、内部で型付けされた変数に代入
-  const { nodes, materials } = useGLTF(
-    "/strawberry.glb"
-  ) as unknown as GLTFResult;
+export function Strawberry(props: StrawberryProps) {
+  const gltf = useGLTF("/strawberry.glb");
+
+  useEffect(() => {
+    gltf.scene.traverse((child) => {
+      if ((child as THREE.Mesh).isMesh) {
+        child.castShadow = true;
+        child.receiveShadow = true;
+      }
+    });
+  }, [gltf.scene]);
 
   return (
     <RigidBody colliders="ball" restitution={0.5} {...props}>
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={nodes.strawberry.geometry}
-        material={materials.red}
-        scale={0.1}
-      />
+      <primitive object={gltf.scene.clone()} scale={1} />
     </RigidBody>
   );
 }
