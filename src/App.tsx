@@ -3,28 +3,19 @@ import { Canvas } from "@react-three/fiber";
 import { createXRStore, XR } from "@react-three/xr";
 import { Physics } from "@react-three/rapier";
 import { Text } from "@react-three/drei";
-import * as THREE from "three";
 
 import { Floor } from "./components/Floor";
-import { Strawberry } from "./components/Strawberry";
 import { Target } from "./components/Target";
 import { Player } from "./components/Player";
+import { ThrowableBox } from "./components/ThrowableBox";
 
 export function App() {
   const store = createXRStore({});
   const [score, setScore] = useState(0);
 
-  const initialStrawberries = [
-    { position: new THREE.Vector3(0, 0.5, -1), id: 1 },
-    { position: new THREE.Vector3(-0.5, 0.5, -1), id: 2 },
-    { position: new THREE.Vector3(0.5, 0.5, -1), id: 3 },
-    { position: new THREE.Vector3(-0.25, 0.5, -1.2), id: 4 },
-    { position: new THREE.Vector3(0.25, 0.5, -1.2), id: 5 },
-  ];
-
   return (
     <>
-      <button onClick={() => store.enterVR()}>Enter XR</button>
+      <button onClick={() => store.enterVR()}>Enter VR</button>
 
       <Canvas shadows>
         <XR store={store}>
@@ -41,14 +32,15 @@ export function App() {
             Score: {score}
           </Text>
 
-          <Physics>
+          <Physics gravity={[0, -9.8, 0]}>
+            <Floor />
             <Player />
-            <Floor position={[0, -0.1, 0]} />
-            <Target onHit={() => setScore((s) => s + 1)} />
 
-            {initialStrawberries.map(({ position, id }) => (
-              <Strawberry key={id} position={position} name="strawberry" />
-            ))}
+            <ThrowableBox position={[0.5, 1.2, -0.5]} />
+            <ThrowableBox position={[0.3, 1.2, -0.5]} />
+            <ThrowableBox position={[-0.5, 1.2, -0.5]} />
+
+            <Target onHit={() => setScore((s) => s + 1)} />
           </Physics>
         </XR>
       </Canvas>
