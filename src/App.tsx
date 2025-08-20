@@ -8,10 +8,20 @@ import { Floor } from "./components/Floor";
 import { Target } from "./components/Target";
 import { Player } from "./components/Player";
 import { ThrowableBox } from "./components/ThrowableBox";
+import { Vector3 } from "three";
 
 export function App() {
   const store = createXRStore({});
   const [score, setScore] = useState(0);
+
+  const initialBoxes = Array.from({ length: 15 }, (_, i) => ({
+    id: i,
+    position: new Vector3(
+      (Math.random() - 0.5) * 1.5,
+      0.5 + i * 0.1,
+      -1 - Math.random() * 1
+    ),
+  }));
 
   return (
     <>
@@ -36,9 +46,13 @@ export function App() {
             <Floor />
             <Player />
 
-            <ThrowableBox position={[0.5, 1.2, -0.5]} />
-            <ThrowableBox position={[0.3, 1.2, -0.5]} />
-            <ThrowableBox position={[-0.5, 1.2, -0.5]} />
+            {initialBoxes.map(({ position, id }) => (
+              <ThrowableBox
+                key={id}
+                position={position}
+                userData={{ type: "box" }}
+              />
+            ))}
 
             <Target onHit={() => setScore((s) => s + 1)} />
           </Physics>
